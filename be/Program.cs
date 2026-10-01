@@ -1,4 +1,6 @@
 using be.Data;
+using be.Interfaces;
+using be.Repository;
 using Microsoft.EntityFrameworkCore;
 
 DotNetEnv.Env.Load();
@@ -13,6 +15,7 @@ builder.Services.AddDbContext<ApplicationDBContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"));
 });
+builder.Services.AddScoped<IStockRepository, StockRepository>();
 
 var app = builder.Build();
 
