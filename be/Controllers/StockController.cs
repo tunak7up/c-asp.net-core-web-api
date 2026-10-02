@@ -19,10 +19,12 @@ namespace be.Controller
     public class StockController : ControllerBase
     {
         private readonly IStockRepository _stockRepo;
+        private readonly ICommentRepository _commentRepo;
 
-        public StockController(IStockRepository stockRepo)
+        public StockController(IStockRepository stockRepo, ICommentRepository commentRepo)
         {
             _stockRepo = stockRepo;
+            _commentRepo = commentRepo;
         }
 
         [HttpGet]
@@ -66,6 +68,7 @@ namespace be.Controller
         [Route("{id}")]
         public async Task<IActionResult> Delete([FromRoute] int id)
         {
+            await _commentRepo.DeleteByStockIdAsync(id);
             var stock = await _stockRepo.DeleteAsync(id);
             if (stock == null)
             {

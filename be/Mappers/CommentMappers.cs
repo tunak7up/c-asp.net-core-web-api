@@ -20,13 +20,21 @@ namespace be.Mappers
                 StockId = cmt.StockId
             };
         }
-        public static Comment ToCreateCommentFromDto(this CreateCommentDto dto, int id)
+        public static Comment ToCreateCommentFromDto(this CreateCommentDto dto, int stockId)
         {
             return new Comment
             {
                 Title = dto.Title,
                 Content = dto.Content,
-                StockId = id
+                StockId = stockId
+            };
+        }
+        public static Comment ToUpdateCommentFromDto(this UpdateCommentDto dto)
+        {
+            return new Comment
+            {
+                Title = dto.Title,
+                Content = dto.Content,
             };
         }
     }

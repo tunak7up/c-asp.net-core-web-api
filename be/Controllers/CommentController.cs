@@ -53,5 +53,27 @@ namespace be.Controllers
             await _commentRepo.CreateAsync(comment);
             return CreatedAtAction(nameof(GetById), new { id = comment.Id }, comment.ToDtoFromComment());
         }
+        [HttpPut]
+        [Route("{id}")]
+        public async Task<IActionResult> Update([FromRoute] int id, [FromBody] UpdateCommentDto dto)
+        {
+            var cmt = await _commentRepo.UpdateAsync(id, dto.ToUpdateCommentFromDto());
+            if (cmt == null)
+            {
+                return NotFound("Comment not found");
+            }
+            return Ok(cmt.ToDtoFromComment());
+        }
+        [HttpDelete]
+        [Route("{id}")]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            var cmt = await _commentRepo.DeleteAsync(id);
+            if (cmt == null)
+            {
+                return NotFound("Comment not found");
+            }
+            return Ok(cmt);
+        }
     }
 }
