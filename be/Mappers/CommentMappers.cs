@@ -9,15 +9,24 @@ namespace be.Mappers
 {
     public static class CommentMappers
     {
-        public static CommentDto ToCommentDto(this Comment commentDto)
+        public static CommentDto ToDtoFromComment(this Comment cmt)
         {
             return new CommentDto
             {
-                Id = commentDto.Id,
-                Title = commentDto.Title,
-                Content = commentDto.Content,
-                CreatedOn = commentDto.CreatedOn,
-                StockId = commentDto.StockId
+                Id = cmt.Id,
+                Title = cmt.Title,
+                Content = cmt.Content,
+                CreatedOn = cmt.CreatedOn,
+                StockId = cmt.StockId
+            };
+        }
+        public static Comment ToCreateCommentFromDto(this CreateCommentDto dto, int id)
+        {
+            return new Comment
+            {
+                Title = dto.Title,
+                Content = dto.Content,
+                StockId = id
             };
         }
     }
