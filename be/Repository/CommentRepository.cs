@@ -66,12 +66,12 @@ namespace be.Repository
             return cmt;
         }
 
-        public async Task<Comment[]?> DeleteByStockIdAsync(int id)
+        public async Task<List<Comment>?> DeleteByStockIdAsync(int id)
         {
-            Comment[] comments = await _context.Comments
+            List<Comment> comments = await _context.Comments
             .Where(cmt => cmt.StockId == id)
-            .ToArrayAsync();
-            if (comments.Length == 0)
+            .ToListAsync();
+            if (comments.Count == 0)
             {
                 return null;
             }

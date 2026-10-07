@@ -15,6 +15,6 @@ namespace be.Interfaces
         Task<bool> CommentExist(int id);
         Task<Comment?> UpdateAsync(int id, Comment model);
         Task<Comment?> DeleteAsync(int id);
-        Task<Comment[]?> DeleteByStockIdAsync(int id);
+        Task<List<Comment>?> DeleteByStockIdAsync(int id);
     }
 }
