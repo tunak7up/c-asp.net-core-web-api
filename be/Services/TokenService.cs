@@ -19,7 +19,7 @@ namespace be.Services
         public TokenService(IConfiguration config)
         {
             _config = config;
-            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JTW:SigningKey"]));
+            _key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JWT:SigningKey"]));
         }
         public string CreateToken(AppUser user)
         {
@@ -38,7 +38,8 @@ namespace be.Services
                 Audience = _config["JWT:Audience"]
             };
             var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.crea
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
         }
     }
 }

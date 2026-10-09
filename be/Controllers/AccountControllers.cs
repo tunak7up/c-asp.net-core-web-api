@@ -5,9 +5,12 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using be.Dtos.Account;
+using be.Interfaces;
 using be.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 
 namespace be.Controllers
@@ -17,9 +20,13 @@ namespace be.Controllers
     public class AccountControllers : ControllerBase
     {
         private readonly UserManager<AppUser> _userManager;
-        public AccountControllers(UserManager<AppUser> userManager)
+        private readonly ITokenService _tokenService;
+        private readonly SignInManager<AppUser> _signinManager;
+        public AccountControllers(UserManager<AppUser> userManager, ITokenService tokenService, SignInManager<AppUser> signinManager)
         {
             _userManager = userManager;
+            _tokenService = tokenService;
+            _signinManager = signinManager;
         }
         [HttpPost]
         [Route("register")]
@@ -42,7 +49,14 @@ namespace be.Controllers
                     var roleResult = await _userManager.AddToRoleAsync(appUser, "User");
                     if (roleResult.Succeeded)
                     {
-                        return Ok($"User created: {appUser.UserName} {appUser.PasswordHash}");
+                        return Ok(
+                            new NewUserDto
+                            {
+                                UserName = appUser.UserName,
+                                Email = appUser.Email,
+                                Token = _tokenService.CreateToken(appUser)
+                            }
+                        );
                     }
                     else
                     {
@@ -58,7 +72,33 @@ namespace be.Controllers
             {
                 return StatusCode(500, e);
             }
-
+        }
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login(LoginDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var user = await _userManager.Users.FirstOrDefaultAsync(x => x.UserName == dto.UserName.ToLower());
+            if (user == null)
+            {
+                return Unauthorized("username or password wrong");
+            }
+            var result = await _signinManager.CheckPasswordSignInAsync(user, dto.Password, false);
+            if (!result.Succeeded)
+            {
+                return Unauthorized("username or password wrong");
+            }
+            return Ok(
+                new NewUserDto
+                {
+                    UserName = user.UserName,
+                    Email = user.Email,
+                    Token = _tokenService.CreateToken(user)
+                }
+            );
         }
     }
 }

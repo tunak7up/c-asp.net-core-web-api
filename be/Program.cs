@@ -2,6 +2,7 @@ using be.Data;
 using be.Interfaces;
 using be.Models;
 using be.Repository;
+using be.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.CodeAnalysis.Options;
@@ -59,6 +60,7 @@ builder.Services.AddAuthentication(options =>
 );
 builder.Services.AddScoped<IStockRepository, StockRepository>();
 builder.Services.AddScoped<ICommentRepository, CommentRepository>();
+builder.Services.AddScoped<ITokenService, TokenService>();
 
 var app = builder.Build();
 
