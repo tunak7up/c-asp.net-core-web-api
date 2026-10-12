@@ -29,19 +29,19 @@ namespace be.Repository
 
         public async Task<Stock?> DeleteAsync(int id)
         {
-            var toRemove = await _context.Stock.FirstOrDefaultAsync(x => x.ID == id);
+            var toRemove = await _context.Stocks.FirstOrDefaultAsync(x => x.ID == id);
             if (toRemove == null)
             {
                 return null;
             }
-            _context.Stock.Remove(toRemove);
+            _context.Stocks.Remove(toRemove);
             await _context.SaveChangesAsync();
             return toRemove;
         }
 
         public async Task<List<Stock>> GetAllAsync(QueryObject query)
         {
-            var stocks = _context.Stock.Include(c => c.Comments).AsQueryable();
+            var stocks = _context.Stocks.Include(c => c.Comments).AsQueryable();
             if (!string.IsNullOrEmpty(query.CompanyName))
             {
                 stocks = stocks.Where(s => s.CompanyName.Contains(query.CompanyName));
@@ -62,17 +62,17 @@ namespace be.Repository
 
         public async Task<Stock?> GetByIdAsync(int id)
         {
-            return await _context.Stock.Include(c => c.Comments).FirstOrDefaultAsync();
+            return await _context.Stocks.Include(c => c.Comments).FirstOrDefaultAsync(s => s.ID == id);
         }
 
         public async Task<bool> StockExist(int id)
         {
-            return await _context.Stock.AnyAsync(s => s.ID == id);
+            return await _context.Stocks.AnyAsync(s => s.ID == id);
         }
 
         public async Task<Stock?> UpdateAsync(int id, UpdateStockDto dto)
         {
-            var model = await _context.Stock.FirstOrDefaultAsync(x => x.ID == id);
+            var model = await _context.Stocks.FirstOrDefaultAsync(x => x.ID == id);
             if (model == null)
             {
                 return null;

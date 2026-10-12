@@ -8,6 +8,6 @@ namespace be.Models
 {
     public class AppUser : IdentityUser
     {
-
+        public List<Portfolio> Portfolios = new List<Portfolio>();
     }
 }

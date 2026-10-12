@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace be.Models
 {
+    [Table("Stocks")]
     public class Stock
     {
         public int ID { get; set; }
@@ -18,5 +19,6 @@ namespace be.Models
         public string Industry { get; set; } = string.Empty;
         public long MarketCap { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
+        public List<Portfolio> Portfolios = new List<Portfolio>();
     }
 }
