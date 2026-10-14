@@ -29,11 +29,11 @@ builder.Services.AddControllers().AddNewtonsoftJson(option =>
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequireDigit = true;
+    options.Password.RequireDigit = false;
     options.Password.RequireLowercase = true;
     options.Password.RequireUppercase = false;
     options.Password.RequireNonAlphanumeric = false;
-    options.Password.RequiredLength = 8;
+    options.Password.RequiredLength = 4;
 }).AddEntityFrameworkStores<ApplicationDBContext>();
 
 builder.Services.AddAuthentication(options =>
@@ -96,8 +96,12 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
+    app.UseStaticFiles();
     app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwaggerUI(c =>
+    {
+        c.InjectJavascript("/swagger-auto-auth.js");
+    });
 }
 
 app.UseHttpsRedirection();

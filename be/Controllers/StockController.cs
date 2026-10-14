@@ -38,7 +38,7 @@ namespace be.Controller
                 return BadRequest(ModelState);
             }
             var stocks = await _stockRepo.GetAllAsync(query);
-            var stockdtos = stocks.Select(s => s.ToDtoFromStock());
+            var stockdtos = stocks.Select(s => s.ToDtoFromStock()).ToList();
             return Ok(stockdtos);
         }
         [HttpGet]

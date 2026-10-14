@@ -17,7 +17,7 @@ namespace be.Mappers
                 Symbol = stockModel.Symbol,
                 CompanyName = stockModel.CompanyName,
                 Purchase = stockModel.Purchase,
-                Comments = stockModel.Comments.Select(c => c.ToDtoFromComment()).ToList()
+                CommentDtos = stockModel.Comments.Select(c => c.ToDtoFromComment()).ToList()
             };
         }
         public static Stock ToStockFromDto(this CreateStockDto dto)

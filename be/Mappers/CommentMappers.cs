@@ -16,6 +16,7 @@ namespace be.Mappers
                 Id = cmt.Id,
                 Title = cmt.Title,
                 Content = cmt.Content,
+                createdBy = cmt.AppUser.UserName,
                 CreatedOn = cmt.CreatedOn,
                 StockId = cmt.StockId
             };

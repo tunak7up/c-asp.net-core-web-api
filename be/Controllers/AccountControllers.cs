@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using be.Dtos.Account;
+using be.Extensions;
 using be.Interfaces;
 using be.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -99,6 +101,32 @@ namespace be.Controllers
                     Token = _tokenService.CreateToken(user)
                 }
             );
+        }
+        [HttpPatch]
+        [Route("changepassword")]
+        [Authorize]
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDto dto)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            var username = User.GetCurrentUsername();
+            if (string.IsNullOrEmpty(username))
+            {
+                return Unauthorized();
+            }
+            var appUser = await _userManager.FindByNameAsync(username);
+            if (appUser is null)
+            {
+                return Unauthorized();
+            }
+            var result = await _userManager.ChangePasswordAsync(appUser, dto.OldPassword, dto.NewPassword);
+            if (!result.Succeeded)
+            {
+                return BadRequest(result.Errors.Select(e => e.Description));
+            }
+            return Ok();
         }
     }
 }

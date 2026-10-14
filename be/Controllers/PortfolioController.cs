@@ -30,23 +30,23 @@ namespace be.Controllers
         [Authorize]
         public async Task<IActionResult> GetUserPortfolio()
         {
-            var username = User.GetUsername();
+            var username = User.GetCurrentUsername();
             var appuser = await _userManager.FindByNameAsync(username);
-            var userPortfolio = await _portfolioRepo.GetUserPortfolioAsync(appuser);
+            var userPortfolio = await _portfolioRepo.GetUserStocksAsync(appuser);
             return Ok(userPortfolio);
         }
         [HttpPost]
         [Authorize]
         public async Task<IActionResult> CreatePortfolio([FromBody] string symbol)
         {
-            var username = User.GetUsername();
+            var username = User.GetCurrentUsername();
             var appuser = await _userManager.FindByNameAsync(username);
             var stock = await _stockRepo.GetBySymbolAsync(symbol);
             if (stock == null)
             {
                 return BadRequest($"stock with symbol: {symbol} not found");
             }
-            var userPortfolio = await _portfolioRepo.GetUserPortfolioAsync(appuser);
+            var userPortfolio = await _portfolioRepo.GetUserStocksAsync(appuser);
             if (userPortfolio.Any(e => e.Symbol == stock.Symbol))
             {
                 return BadRequest("cant create port because trung symbol");
@@ -65,7 +65,24 @@ namespace be.Controllers
             {
                 return Created();
             }
-
+        }
+        [HttpDelete]
+        [Authorize]
+        public async Task<IActionResult> DeletePortfolio([FromBody] string symbol)
+        {
+            var username = User.GetCurrentUsername();
+            var appuser = await _userManager.FindByNameAsync(username);
+            var userPortfolio = await _portfolioRepo.GetUserStocksAsync(appuser);
+            var filteredStock = userPortfolio.Where(s => s.Symbol == symbol).ToList();
+            if (filteredStock.Count() == 1)
+            {
+                await _portfolioRepo.DeleteAsync(appuser, symbol);
+            }
+            else
+            {
+                return BadRequest("Stock not in your portfolio");
+            }
+            return Ok();
         }
     }
 }

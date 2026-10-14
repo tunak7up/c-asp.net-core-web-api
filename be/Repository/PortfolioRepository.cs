@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using be.Data;
+using be.Dtos.Stock;
 using be.Interfaces;
 using be.Models;
 using Microsoft.EntityFrameworkCore;
@@ -24,10 +25,22 @@ namespace be.Repository
             return portfolio;
         }
 
-        public async Task<List<Stock>> GetUserPortfolioAsync(AppUser user)
+        public async Task<Portfolio> DeleteAsync(AppUser appUser, string symbol)
         {
-            return await _context.Portfolios.Where(u => u.AppUserId == user.Id)
-            .Select(p => new Stock
+            var portfolioModel = await _context.Portfolios.FirstOrDefaultAsync(x => x.AppUserId == appUser.Id && x.Stock.Symbol == symbol);
+            if (portfolioModel == null)
+            {
+                return null;
+            }
+            _context.Remove(portfolioModel);
+            await _context.SaveChangesAsync();
+            return portfolioModel;
+        }
+
+        public async Task<List<StockDto>> GetUserStocksAsync(AppUser user)
+        {
+            return await _context.Portfolios.Where(p => p.AppUserId == user.Id)
+            .Select(p => new StockDto
             {
                 ID = p.StockId,
                 Symbol = p.Stock.Symbol,

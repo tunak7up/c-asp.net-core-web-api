@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using be.Dtos.Comment;
-using be.Models;
 namespace be.Dtos.Stock
 {
     public class StockDto
@@ -15,6 +14,6 @@ namespace be.Dtos.Stock
         public decimal LastDiv { get; set; }
         public string Industry { get; set; } = string.Empty;
         public long MarketCap { get; set; }
-        public List<CommentDto> Comments { get; set; }
+        public List<CommentDto> CommentDtos { get; set; }
     }
 }
