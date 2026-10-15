@@ -7,7 +7,7 @@ namespace be.Helpers
 {
     public class CommentQueryObject
     {
-        public string Symbol { get; set; }
+        public string? CreatedByStockWithSymbol { get; set; }
         public bool IsDecsending { get; set; } = true;
     }
 }

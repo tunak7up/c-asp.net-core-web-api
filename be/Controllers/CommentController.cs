@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using be.Dtos;
 using be.Dtos.Comment;
 using be.Extensions;
+using be.Helpers;
 using be.Interfaces;
 using be.Mappers;
 using be.Models;
@@ -29,13 +30,13 @@ namespace be.Controllers
             _userManager = userManager;
         }
         [HttpGet]
-        public async Task<IActionResult> GetAll()
+        public async Task<IActionResult> GetAll([FromQuery] CommentQueryObject query)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            var comments = await _commentRepo.GetAllAsync();
+            var comments = await _commentRepo.GetAllAsync(query);
             var commentdtos = comments.Select(s => s.ToDtoFromComment());
             return Ok(commentdtos);
         }

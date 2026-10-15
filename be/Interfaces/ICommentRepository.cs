@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using be.Dtos.Comment;
+using be.Helpers;
 using be.Models;
 
 namespace be.Interfaces
 {
     public interface ICommentRepository
     {
-        Task<List<Comment>> GetAllAsync();
+        Task<List<Comment>> GetAllAsync(CommentQueryObject query);
         Task<Comment?> GetByIdAsync(int id);
         Task<Comment> CreateAsync(Comment cmt);
         Task<bool> CommentExist(int id);

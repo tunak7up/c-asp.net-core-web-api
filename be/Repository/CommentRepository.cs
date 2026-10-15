@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using be.Data;
 using be.Dtos.Comment;
+using be.Helpers;
 using be.Interfaces;
 using be.Models;
 using Microsoft.EntityFrameworkCore;
@@ -21,9 +22,18 @@ namespace be.Repository
             _context = context;
         }
 
-        public async Task<List<Comment>> GetAllAsync()
+        public async Task<List<Comment>> GetAllAsync(CommentQueryObject query)
         {
-            return await _context.Comments.Include(x => x.AppUser).ToListAsync();
+            var comments = _context.Comments.Include(x => x.AppUser).AsQueryable();
+            if (!string.IsNullOrWhiteSpace(query.CreatedByStockWithSymbol))
+            {
+                comments = comments.Where(s => s.Stock.Symbol == query.CreatedByStockWithSymbol);
+            }
+            if (query.IsDecsending == true)
+            {
+                comments = comments.OrderByDescending(c => c.CreatedOn);
+            }
+            return await comments.ToListAsync();
         }
 
         public async Task<Comment?> GetByIdAsync(int id)
